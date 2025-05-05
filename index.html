@@ -1,222 +1,231 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Bogenschießen</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: #f9fafb;
-            font-family: "Segoe UI", sans-serif;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Bogenschießen</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #f9fafb;
+      font-family: "Segoe UI", sans-serif;
+      overflow: hidden;
+    }
 
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
 
-        .target-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            height: 90vh;
-            aspect-ratio: 1/1;
-        }
+    .target-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      height: 90vh;
+      aspect-ratio: 1/1;
+    }
 
-        #target {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle,
-                red 0%,
-                red 8%,
-                white 8%,
-                white 24%,
-                red 24%,
-                red 40%,
-                white 40%,
-                white 56%,
-                red 56%,
-                red 100%
-            );
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
+    #target {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        red 0%,
+        red 6%,
+        white 6%,
+        white 18%,
+        red 18%,
+        red 30%,
+        white 30%,
+        white 42%,
+        red 42%,
+        red 100%
+      );
+      position: relative;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-        .controls {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
+    .controls {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
 
-        .btn {
-            padding: 12px 20px;
-            font-size: 18px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+    .btn {
+      padding: 12px 20px;
+      font-size: 18px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
 
-        .score-display {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            font-size: 32px;
-            font-weight: bold;
-            color: #111;
-        }
+    .score-display {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #111;
+    }
 
-        .end-message {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
+    .end-message {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      max-width: 40%;
+      text-align: right;
+    }
 
-        .shot-marker {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: black;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
+    .shot-marker {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: black;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
 
-        .arrow-count {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 24px;
-        }
-
-    </style>
+    .arrow-count {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+  <div class="container">
     <div class="arrow-count" id="arrowIcons"></div>
 
     <div class="target-wrapper">
-        <div id="target" onclick="shoot(event)"></div>
+      <div id="target"></div>
     </div>
 
     <div class="score-display">
-        Punkte: <span id="totalPoints">0</span>
+      Punkte: <span id="totalPoints">0</span>
     </div>
+
     <div class="end-message" id="endMessage" style="display: none;"></div>
 
     <div class="controls">
-        <button class="btn" onclick="newGame()">Neues Spiel</button>
-        <button class="btn" onclick="endGame()">Spiel beenden</button>
+      <button class="btn" onclick="newGame()">Neues Spiel</button>
+      <button class="btn" onclick="endGame()">Spiel beenden</button>
     </div>
-</div>
+  </div>
 
-<script>
+  <script>
     let totalPoints = 0;
     let arrowsLeft = 3;
     let gameEnded = false;
 
-    const scores = [50, 40, 30, 20, 10]; // Zentrum bis außen
+    const scores = [50, 40, 30, 20, 10]; // von innen nach außen
     const target = document.getElementById('target');
     const arrowIcons = document.getElementById('arrowIcons');
 
-    function shoot(event) {
-        if (gameEnded || arrowsLeft <= 0) return;
+    function shoot(touchEvent) {
+      if (gameEnded || arrowsLeft <= 0) return;
 
-        const rect = target.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const dx = x - centerX;
-        const dy = y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const radius = rect.width / 2;
-        const ringWidth = radius / 5;
+      const rect = target.getBoundingClientRect();
+      const x = touchEvent.clientX - rect.left;
+      const y = touchEvent.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const radius = rect.width / 2;
+      const ringWidth = radius / 5;
 
-        let score = 0;
-        for (let i = 0; i < scores.length; i++) {
-            if (distance <= ringWidth * (i + 1)) {
-                score = scores[i];
-                break;
-            }
+      let score = 0;
+      for (let i = 0; i < scores.length; i++) {
+        if (distance <= ringWidth * (i + 1)) {
+          score = scores[i];
+          break;
         }
+      }
 
-        totalPoints += score;
-        arrowsLeft--;
+      totalPoints += score;
+      arrowsLeft--;
 
-        document.getElementById('totalPoints').textContent = totalPoints;
-        addShotMarker(x, y);
-        updateArrowIcons();
+      document.getElementById('totalPoints').textContent = totalPoints;
+      addShotMarker(x, y);
+      updateArrowIcons();
 
-        if (arrowsLeft === 0) {
-            showEndMessage();
-        }
+      if (arrowsLeft === 0) {
+        showEndMessage();
+      }
     }
 
     function addShotMarker(x, y) {
-        const marker = document.createElement("div");
-        marker.className = "shot-marker";
-        marker.style.left = x + "px";
-        marker.style.top = y + "px";
-        target.appendChild(marker);
+      const marker = document.createElement("div");
+      marker.className = "shot-marker";
+      marker.style.left = x + "px";
+      marker.style.top = y + "px";
+      target.appendChild(marker);
     }
 
     function updateArrowIcons() {
-        const shotCount = 3 - arrowsLeft;
-        arrowIcons.innerHTML = "🏹".repeat(shotCount);
+      const shotCount = 3 - arrowsLeft;
+      arrowIcons.innerHTML = "🏹".repeat(shotCount);
     }
 
     function showEndMessage() {
-        gameEnded = true;
-        const msg = document.getElementById('endMessage');
-        let text = '';
+      gameEnded = true;
+      const msg = document.getElementById('endMessage');
+      let text = '';
 
-        if (totalPoints >= 130) {
-            text = "Unglaublich! Du bist ein echter Profi! 🎯";
-        } else if (totalPoints >= 90) {
-            text = "Starke Leistung – weiter so!";
-        } else if (totalPoints >= 60) {
-            text = "Ganz gut getroffen!";
-        } else if (totalPoints > 0) {
-            text = "Da geht noch was – üben macht den Meister.";
-        } else {
-            text = "Oh nein! Kein Treffer – nächstes Mal klappt’s!";
-        }
+      if (totalPoints >= 130) {
+        text = "Unglaublich! Du bist ein echter Profi! 🎯";
+      } else if (totalPoints >= 90) {
+        text = "Starke Leistung – weiter so!";
+      } else if (totalPoints >= 60) {
+        text = "Ganz gut getroffen!";
+      } else if (totalPoints > 0) {
+        text = "Da geht noch was – üben macht den Meister.";
+      } else {
+        text = "Oh nein! Kein Treffer – nächstes Mal klappt’s!";
+      }
 
-        msg.textContent = text;
-        msg.style.display = 'block';
+      msg.textContent = text;
+      msg.style.display = 'block';
     }
 
     function newGame() {
-        totalPoints = 0;
-        arrowsLeft = 3;
-        gameEnded = false;
-        document.getElementById('totalPoints').textContent = "0";
-        document.getElementById('endMessage').style.display = 'none';
-        arrowIcons.innerHTML = '';
-        target.querySelectorAll('.shot-marker').forEach(m => m.remove());
+      totalPoints = 0;
+      arrowsLeft = 3;
+      gameEnded = false;
+      document.getElementById('totalPoints').textContent = "0";
+      document.getElementById('endMessage').style.display = 'none';
+      arrowIcons.innerHTML = '';
+      target.querySelectorAll('.shot-marker').forEach(m => m.remove());
     }
 
     function endGame() {
-        if (!gameEnded) {
-            showEndMessage();
-        }
+      if (!gameEnded) {
+        showEndMessage();
+      }
     }
-</script>
+
+    // 📱 Unterstützung für Touch und Maus
+    target.addEventListener("click", (e) => shoot(e));
+    target.addEventListener("touchend", (e) => shoot(e.changedTouches[0]));
+  </script>
 </body>
 </html>
