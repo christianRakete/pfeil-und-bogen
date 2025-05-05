@@ -222,8 +222,14 @@
     }
 
     // 📱 Touch- und Maus-Support
-    target.addEventListener("click", (e) => shoot(e));
-    target.addEventListener("touchstart", (e) => shoot(e.changedTouches[0]));
+    if ('ontouchstart' in window) {
+        target.addEventListener("touchstart", (e) => {
+        e.preventDefault(); // 👈 wichtig für Smart Boards / Safari
+        shoot(e.changedTouches[0]);
+        });
+        } else {
+        target.addEventListener("click", (e) => shoot(e));
+    }
   </script>
 </body>
 </html>
