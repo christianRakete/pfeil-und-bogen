@@ -12,6 +12,10 @@
       background: #f9fafb;
       font-family: "Segoe UI", sans-serif;
       overflow: hidden;
+      /* background: radial-gradient(circle,rgba(255, 255, 255, 1) 22%, rgba(255, 0, 0, 0.23) 100%); */
+      background: #ffefba; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #ffefba, #ffffff); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #ffefba, #ffffff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     }
 
     .container {
@@ -26,7 +30,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      height: 60vh;
+      height: 80vh;
       aspect-ratio: 1/1;
     }
 
@@ -36,16 +40,16 @@
       border-radius: 50%;
       background: radial-gradient(
         circle,
-        red 0%,
-        red 8%,
+        #CE0E2D 0%,
+        #CE0E2D 8%,
         white 8%,
         white 24%,
-        red 24%,
-        red 40%,
+        #CE0E2D 24%,
+        #CE0E2D 40%,
         white 40%,
         white 56%,
-        red 56%,
-        red 100%
+        #CE0E2D 56%,
+        #CE0E2D 100%
       );
       position: relative;
       overflow: hidden;
@@ -55,9 +59,10 @@
     .controls {
       position: absolute;
       bottom: 10px;
+      right: 20px;
       width: 100%;
       display: flex;
-      justify-content: center;
+      justify-content: flex-end;
       gap: 15px;
       z-index: 100;
     }
@@ -65,7 +70,7 @@
     .btn {
       padding: 14px 24px;
       font-size: 22px;
-      background: #007bff;
+      background: #CE0E2D;
       color: white;
       border: none;
       border-radius: 12px;
@@ -83,12 +88,12 @@
 
     .end-message {
       position: absolute;
-      bottom: 20px;
+      top: 20px;
       right: 20px;
-      font-size: 32px;
+      font-size: 50px;
       font-weight: bold;
       color: #333;
-      max-width: 45%;
+      max-width: 25%;
       text-align: right;
     }
 
@@ -106,7 +111,8 @@
       position: absolute;
       top: 15px;
       left: 15px;
-      font-size: 36px;
+      font-size: 50px;
+      letter-spacing: 15px;
     }
   </style>
 </head>
