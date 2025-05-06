@@ -18,6 +18,7 @@
       position: relative;
       width: 100%;
       height: 100%;
+      z-index: 0;
     }
 
     .target-wrapper {
@@ -58,6 +59,7 @@
       display: flex;
       justify-content: center;
       gap: 15px;
+      z-index: 100;
     }
 
     .btn {
@@ -109,24 +111,25 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="arrow-count" id="arrowIcons"></div>
-
-    <div class="target-wrapper">
-      <div id="target"></div>
-    </div>
-
-    <div class="score-display">
-      Punkte: <span id="totalPoints">0</span>
-    </div>
-
-    <div class="end-message" id="endMessage" style="display: none;"></div>
-
-    <div class="controls">
-      <button class="btn" onclick="newGame()">Neues Spiel</button>
-      <button class="btn" onclick="endGame()">Spiel beenden</button>
-    </div>
-  </div>
+    <div class="container">
+        <div class="arrow-count" id="arrowIcons"></div>
+    
+        <div class="target-wrapper">
+          <div id="target"></div>
+        </div>
+    
+        <div class="score-display">
+          Punkte: <span id="totalPoints">0</span>
+        </div>
+    
+        <div class="end-message" id="endMessage" style="display: none;"></div>
+      </div>
+    
+      <!-- 👇 Steuerung aus dem container herausgezogen -->
+      <div class="controls">
+        <button class="btn" onclick="newGame()">Neues Spiel</button>
+        <button class="btn" onclick="endGame()">Spiel beenden</button>
+      </div>
 
   <script>
     let totalPoints = 0;
